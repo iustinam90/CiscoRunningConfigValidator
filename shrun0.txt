@@ -1,0 +1,19 @@
+aaa new-model
+interface fa0/1
+ dot1x pae authenticator
+ authentication host-mode multi-host
+ authentication event no-response action authorize vlan 1
+ authentication event server dead action reinitialize vlan 2
+ authentication event fail action authorize vlan 6
+ switchport mode trunk
+interface fa0/2
+ switchport mode access
+ authentication host-mode multi-domain
+ authentication event no-response action authorize vlan 3
+ authentication event fail action authorize vlan 4
+ authentication violation replace
+ authentication event server dead action reinitialize vlan 5
+ authentication event server dead action authorize voice
+interface fa0/3
+ authentication port-control auto
+ no switchport

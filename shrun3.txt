@@ -1,0 +1,1 @@
+nat (1.1.1.1, 2.2.2.2) source static X X destination static Y Y [~no-proxy-arp]

@@ -1,0 +1,177 @@
+version 12.2
+no service pad
+service timestamps debug uptime
+service timestamps log uptime
+no service password-encryption
+!
+hostname Ramebala_vlan487
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$v33j$PXwWMyjB6yVPa5J7kNxvC0
+!
+username cisco password 0 cisco
+!
+!
+aaa new-model
+!
+!
+aaa group server radius TEST
+ server 10.106.70.246 auth-port 1812 acct-port 1813
+ ip radius source-interface Vlan487
+!
+aaa authentication dot1x default group TEST
+aaa authorization network default group TEST
+aaa accounting dot1x default start-stop group TEST
+!
+aaa server radius sesm
+!
+!
+aaa session-id common
+system mtu routing 1500
+ip routing
+no ip domain-lookup
+ip dhcp excluded-address 10.106.121.1
+ip dhcp excluded-address 10.106.121.1 10.106.121.20
+ip dhcp excluded-address 10.106.121.1 10.106.121.30
+ip dhcp excluded-address 10.106.122.1 10.106.122.130
+!
+ip dhcp pool VLAN487
+   network 10.106.122.128 255.255.255.192
+   default-router 10.106.122.129
+   option 150 ip 10.106.122.156
+!
+!
+ip device tracking
+!
+!
+crypto pki trustpoint TP-self-signed-2874414336
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-2874414336
+ revocation-check none
+ rsakeypair TP-self-signed-2874414336
+!
+!
+crypto pki certificate chain TP-self-signed-2874414336
+ certificate self-signed 01
+  30820249 308201B2 A0030201 02020101 300D0609 2A864886 F70D0101 04050030
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 32383734 34313433 3336301E 170D3933 30333031 30303031
+  30325A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D32 38373434
+  31343333 3630819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281
+  8100C18E EE48F889 18BDCC3B ED0A1CF3 063353AD E9DD1DDD 8F694B9F CD513154
+  3611A0FC 99ED178E 9682EE27 315AF157 59BC568F 6C5B9E49 1E329F01 70611A9B
+  F413CD1E 32CA552A B5AFD762 44FAD695 BDE4FDF5 B9C4BB89 1E26F40B 2D26A2A3
+  85D57FA7 10B94292 252FAC99 A3E04447 487D37C4 68DC777D 4D5ED8F4 C06A3337
+  ABE90203 010001A3 71306F30 0F060355 1D130101 FF040530 030101FF 301C0603
+  551D1104 15301382 1152616D 6562616C 615F766C 616E3438 372E301F 0603551D
+  23041830 1680141E D92E8426 AB97E455 0088E706 F3685CE1 A33BE630 1D060355
+  1D0E0416 04141ED9 2E8426AB 97E45500 88E706F3 685CE1A3 3BE6300D 06092A86
+  4886F70D 01010405 00038181 003E8428 C25B7727 3A97390F AB9F5087 53387FD3
+  25471427 A1886D5A 1755C602 7F1CCA1C B1384C3B 97399047 7F80E15E BD99B051
+  11BCD511 78E12ED6 80E67A8C EC476C98 A525432D 8BE3E7AE 39D43CA5 9340C37C
+  5EA4AF2A EF4F20D9 63DEE51B 58E414B1 0C55563B 42DD1A52 894041C4 1C6C94C9
+  842B0882 0B1A17A0 2BA560F1 11
+  quit
+dot1x system-auth-control
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+no spanning-tree vlan 403-409,411-423,425-430,434-445,447-474,476-480,482-486
+no spanning-tree vlan 488-499,502,602,621,666,700,702
+!
+vlan internal allocation policy ascending
+!
+!
+!
+!
+interface FastEthernet0/1
+ switchport access vlan 487
+ switchport mode access
+ switchport voice vlan 487
+ spanning-tree portfast
+!
+interface FastEthernet0/2
+ switchport access vlan 487
+ switchport mode access
+ switchport voice vlan 487
+ spanning-tree portfast
+!
+interface FastEthernet0/3
+ switchport access vlan 487
+ switchport mode access
+ switchport voice vlan 487
+ spanning-tree portfast
+!
+interface FastEthernet0/4
+ switchport mode access
+ switchport voice vlan 487
+ authentication host-mode multi-domain
+ authentication port-control auto
+ dot1x pae authenticator
+ spanning-tree portfast
+!
+!
+interface FastEthernet0/22
+ switchport access vlan 487
+ switchport mode access
+ switchport voice vlan 487
+ spanning-tree portfast
+!
+interface FastEthernet0/23
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 364,475,481,487
+ switchport mode trunk
+!
+interface FastEthernet0/24
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 364,475,481,487
+ switchport mode trunk
+!
+interface GigabitEthernet0/1
+!
+interface GigabitEthernet0/2
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan481
+ ip address 10.106.121.10 255.255.255.192
+ ip helper-address 10.106.97.139
+!
+interface Vlan487
+ ip address 10.106.122.182 255.255.255.192
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.106.121.1
+ip http server
+ip http secure-server
+!
+!
+!
+radius-server attribute 6 on-for-login-auth
+radius-server attribute 8 include-in-access-req
+radius-server host 10.106.70.246 auth-port 1812 acct-port 1813 key Krakow123
+radius-server vsa send accounting
+radius-server vsa send authentication
+!
+!
+line con 0
+line vty 0 4
+ exec-timeout 0 0
+ password cisco
+ length 0
+line vty 5 15
+ exec-timeout 0 0
+!
+!
+monitor session 1 source interface Fa0/13
+monitor session 1 destination interface Fa0/18
+monitor session 2 source interface Fa0/5
+end
