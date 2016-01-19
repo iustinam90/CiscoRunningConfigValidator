@@ -19,18 +19,20 @@ HW+SW_VERSION - many to many - CONDITIONS - many-to-many - RESULTS( the commands
 Creating signatures for running config:
 
 CLI configuration has a tree-like structure, consisting of commands and subcommands that have specific syntax. For example:
+```python
 aaa new-model
 interface fa0/1
  dot1x pae authenticator
  authentication event no-response action authorize vlan 1
  /* "dot1x pae authenticator" can be seen as a subcommand of "interface fa0/1" and commands have variables, eg "authenticator", "fa0/1", "1". */
+```
  
 Using a syntax that defines commands, their variables and subcommands , one can define signatures for command combinations that are problematic when combined with certain platform/software version.
 
 Example: if we use '_' for variables, [x|y|z] for lists of possible values, 'X','Y',etc for variables that should have the same value in config, '~' for negation, we can define conditions for problematic configurations as below:
-
+```python
 interface _
  authentication host-mode [multi-auth|multi-domain|multi-host]
  authentication event fail action authorize vlan _
 ! dot1x auth fail van not supported in certain modes
-
+```
